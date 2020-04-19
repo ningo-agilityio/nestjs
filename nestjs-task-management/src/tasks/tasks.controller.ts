@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, Delete, Patch, Query, UsePipes, ValidationPipe, ParseIntPipe } from '@nestjs/common';
 import { TasksService } from './tasks.service';
-import { Task } from './task.entity';
+import { Task } from '../entities/task.entity';
 
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
