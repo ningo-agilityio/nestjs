@@ -1,0 +1,10 @@
+db: 
+  host: 'localhost'
+  database: 'taskmanagement'
+  username: 'postgres'
+  password: 'Admin@123'
+  synchronize: true
+
+jwt:
+  secret: 'topSecret51'
+  

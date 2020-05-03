@@ -8,6 +8,8 @@ import { User } from '../entities/user.entity';
 import { JwtPayload } from './jwt-payload.interface';
 import { SECRET_KEY } from 'src/config/constants';
 
+import * as config from 'config';
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
@@ -16,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('bearer'),
-      secretOrKey: SECRET_KEY
+      secretOrKey: process.env.JWT_SECRET || config.get('jwt').secret
     })
   }
 

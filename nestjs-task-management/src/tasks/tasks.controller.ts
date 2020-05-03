@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Patch, Query, UsePipes, ValidationPipe, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Patch, Query, UsePipes, ValidationPipe, ParseIntPipe, UseGuards, Req, Logger } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { Task } from '../entities/task.entity';
 
@@ -13,11 +13,13 @@ import { User } from 'src/entities/user.entity';
 @Controller('tasks')
 @UseGuards(AuthGuard())
 export class TasksController {
+  private logger = new Logger("TasksController");
   constructor(private taskService: TasksService) { }
   /// NEW approaching
   @Get('/:id')
-  getTaskById(@Param('id', ParseIntPipe) id: number): Promise<Task> {
-    return this.taskService.getTaskById(id);
+  getTaskById(@Param('id', ParseIntPipe) id: number, @GetUser() user: User,
+  ): Promise<Task> {
+    return this.taskService.getTaskById(id, user);
   }
 
   @Post()
@@ -26,18 +28,24 @@ export class TasksController {
     @Body() createTaskDto: CreateTaskDto,
     @GetUser() user: User,
   ): Promise<Task> {
-    console.log(user)
     return this.taskService.createTask(createTaskDto, user);
   }
 
   @Delete('/:id')
-  deleteTaskById(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.taskService.deleteTask(id);
+  deleteTaskById(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return this.taskService.deleteTask(id, user);
   }
 
   @Patch('/:id')
-  updateTask(@Param('id', ParseIntPipe) id: number, @Body() updateTaskDto: UpdateTaskDto): Promise<Task> {
-    return this.taskService.updateTask(id, updateTaskDto);
+  updateTask(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateTaskDto: UpdateTaskDto,
+    @GetUser() user: User,
+  ): Promise<Task> {
+    return this.taskService.updateTask(id, updateTaskDto, user);
   }
 
   @Get()
@@ -45,8 +53,7 @@ export class TasksController {
     @Query(ValidationPipe) filterDto: FilterTaskDto,
     @GetUser() user: User,
   ): Promise<Task[]> {
-    console.log("controller", user)
-
+    this.logger.verbose(`User ${user.username} retrieving all tasks.`)
     return this.taskService.getTasks(filterDto, user);
   }
 

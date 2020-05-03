@@ -7,12 +7,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
 import { SECRET_KEY } from 'src/config/constants';
+import * as config from 'config';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
-      secret: SECRET_KEY,
+      secret: process.env.JWT_SECRET || config.get('jwt').secret,
       signOptions: {
         expiresIn: 3600,
       }
